@@ -1,0 +1,224 @@
+﻿
+
+
+@{
+    ViewBag.Title = "سفير";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<style>
+    .weight {
+        text-align: center;
+        vertical-align: middle;
+        height: 100px;
+        font-weight: bold;
+        color: white;
+    }
+
+    .selected {
+        border: solid !important;
+        color: white !important;
+        background-color: green !important;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        background-color: #2196F3;
+        padding: 1px;
+        width: 200px;
+    }
+
+    .grid-container-result {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        background-color: #2196F3;
+        padding: 3px;
+        width: 612px;
+    }
+
+    .numberCircle {
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        padding: 1px;
+        background: #fff;
+        border: 2px solid #666;
+        color: #666;
+        text-align: left;
+        font: 32px Arial, sans-serif;
+    }
+
+    .grid-item {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        padding: 1px;
+        font-size: 30px;
+        text-align: center;
+        width: 50px;
+        Height: 50px;
+    }
+
+    .grid-item-result {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        padding: 2px;
+        font-size: 10px;
+        text-align: center;
+        vertical-align: middle;
+        width: 200px;
+        Height: 200px;
+        display: grid;
+        grid-template-columns: auto auto auto;
+    }
+
+    .centerstyle {
+        text-align: center;
+    }
+
+    .paddingCss {
+        padding: 2px;
+        text-align: center;
+        width: 50px;
+    }
+</style>
+
+
+<div class="row">
+    <center>
+        <div class="col-md-12">
+
+            <div class="grid-container-result">
+                <div id="weight_1_result" class="grid-item-result"> </div>
+                <div id="weight_3_result" class="grid-item-result"></div>
+                <div id="weight_5_result" class="grid-item-result"></div>
+                <div id="weight_8_result" class="grid-item-result"></div>
+                <div id="weight_13_result" class="grid-item-result"></div>
+                <div id="weight_20_result" class="grid-item-result"></div>
+                <div id="weight_40_result" class="grid-item-result"></div>
+                <div id="weight_0_result" class="grid-item-result"></div>
+                <div id="weight_80_result" class="grid-item-result"></div>
+            </div>
+        </div>
+    </center>
+</div>
+
+<br />
+
+<div id="AgileTeamMembers">  </div>
+
+
+<script>
+
+
+    function selectweight(id, name) {
+        $("#weight_1" + name).removeClass("selected");
+        $("#weight_3" + name).removeClass("selected");
+        $("#weight_5" + name).removeClass("selected");
+        $("#weight_8" + name).removeClass("selected");
+        $("#weight_13" + name).removeClass("selected");
+        $("#weight_20" + name).removeClass("selected");
+        $("#weight_40" + name).removeClass("selected");
+        $("#weight_0" + name).removeClass("selected");
+        $("#weight_80" + name).removeClass("selected");
+
+        $("#weight_" + id + name).addClass("selected");
+
+        $.post("@Url.Action("SubmitWeight")",
+            {
+                name: name,
+                weight: id
+            },
+            function (data, status) {
+                //TODO
+                retrieveAgileTeamWeight();
+            });
+
+
+
+    }
+
+    function retrieveAgileTeamWeight() {
+        $.get("@Url.Action("GetWeight")", function (data, status) {
+            var entries = Object.entries(data)
+            console.log(entries)
+
+            $("[id$='_result']").empty();
+
+
+            var values = ["1", "3", "5", "8", "13", "20", "40", "0", "80"];
+            for (var k = 0; k < entries.length; k++) {
+
+                var span = "<span class='numberCircle'><span>" + values[k] + "</span></span>";
+                if (values[k] == "80") {
+                    span = "<span class='numberCircle'><span>?</span></span>";
+                }
+                $("#weight_" + values[k]+ "_result").append("<div>" + span + "</div>");
+            }
+            for (var i = 0; i < entries.length; i++) {
+                var id = entries[i][1];
+                var name = entries[i][0];
+
+
+
+                $("#weight_" + entries[i][1] + "_result").append("<div class='paddingCss'>" + entries[i][0] + "</div>");
+
+                $("#weight_1" + name).removeClass("selected");
+                $("#weight_3" + name).removeClass("selected");
+                $("#weight_5" + name).removeClass("selected");
+                $("#weight_8" + name).removeClass("selected");
+                $("#weight_13" + name).removeClass("selected");
+                $("#weight_20" + name).removeClass("selected");
+                $("#weight_40" + name).removeClass("selected");
+                $("#weight_0" + name).removeClass("selected");
+                $("#weight_80" + name).removeClass("selected");
+                $("#weight_" + id + name).addClass("selected");
+            }
+        });
+    }
+
+       function FillUsers() {
+        $.get("@Url.Action("GetWeight")", function (data, status) {
+            var entries = Object.entries(data)
+            console.log(entries)
+
+
+            $("#AgileTeamMembers").empty();
+
+
+            for (var i = 0; i < entries.length; i++) {
+
+                if (i % 3 == 0) {
+                    $("#AgileTeamMembers").append("<div class='row'>");
+                }
+                var memberName = "'" + entries[i][0] + "'";
+
+                $("#AgileTeamMembers").append("<div class='col-md-4'><h1>" + entries[i][0] +"</h1>"
+                    + "<div class='grid-container'>"
+                    + "<div id=\"weight_1" + entries[i][0] + "\" class='grid-item' onclick=\"selectweight(1," + memberName + ")\" >1</div>"
+                    + "<div id=\"weight_3" + entries[i][0] + "\" class='grid-item' onclick=\"selectweight(3," + memberName + ")\" >3</div>"
+                    + "<div id=\"weight_5" + entries[i][0] + "\" class='grid-item' onclick=\"selectweight(5," + memberName + ")\" >5</div>"
+                    + "<div id=\"weight_8" + entries[i][0] + "\" class='grid-item' onclick=\"selectweight(8," + memberName + ")\" >8</div>"
+                    + "<div id=\"weight_13" + entries[i][0] + "\" class='grid-item' onclick=\"selectweight(13," + memberName + ")\" >13</div>"
+                    + "<div id=\"weight_20" + entries[i][0] + "\" class='grid-item' onclick=\"selectweight(20," + memberName + ")\" >20</div>"
+                    + "<div id=\"weight_40" + entries[i][0] + "\" class='grid-item' onclick=\"selectweight(40," + memberName + ")\" >40</div>"
+                    + "<div id=\"weight_0" + entries[i][0] + "\" class='grid-item' onclick=\"selectweight(0," + memberName + ")\" >0</div>"
+                    + "<div id=\"weight_80" + entries[i][0] + "\" class='grid-item selected' onclick=\"selectweight(80," + memberName +")\" >?</div>"
+
+                    + "</div>"
+                    + "</div>")
+
+                if (i % 3 == 0 || i == entries.length) {
+                    $("#AgileTeamMembers").append("</div>");
+                }
+
+            }
+        });
+    }
+
+        setInterval(retrieveAgileTeamWeight, 5000);
+        FillUsers();
+        retrieveAgileTeamWeight();
+
+</script>

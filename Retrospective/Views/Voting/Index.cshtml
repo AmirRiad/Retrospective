@@ -1,0 +1,232 @@
+﻿
+
+
+@{
+    ViewBag.Title = "سفير";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<style>
+    .Voting {
+        text-align: center;
+        vertical-align: middle;
+        height: 100px;
+        font-Voting: bold;
+        color: white;
+    }
+
+    .selected {
+        border: solid !important;
+        border-color: green !important;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        background-color: #2196F3;
+        padding: 1px;
+        width: 200px;
+    }
+
+    .grid-container-result {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        background-color: #2196F3;
+        padding: 3px;
+        width: 612px;
+    }
+
+    .numberCircle {
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        padding: 1px;
+        background: #fff;
+        border: 2px solid #666;
+        color: #666;
+        text-align: left;
+        font: 32px Arial, sans-serif;
+    }
+
+    .grid-item {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        padding: 1px;
+        font-size: 30px;
+        text-align: center;
+        width: 50px;
+        Height: 50px;
+    }
+
+    .grid-item-result {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        padding: 2px;
+        font-size: 10px;
+        text-align: center;
+        vertical-align: middle;
+        width: 200px;
+        Height: 200px;
+        display: grid;
+        grid-template-columns: auto auto auto;
+    }
+
+    .centerstyle {
+        text-align: center;
+    }
+
+    .paddingCss {
+        padding: 2px;
+        text-align: center;
+        width: 50px;
+    }
+</style>
+
+
+<div class="row">
+    <center>
+        <div class="col-md-12">
+
+            <div class="grid-container-result">
+                <div id="Voting_1_result" class="grid-item-result"> </div>
+                <div id="Voting_2_result" class="grid-item-result"></div>
+                <div id="Voting_3_result" class="grid-item-result"></div>
+                <div id="Voting_4_result" class="grid-item-result"></div>
+                <div id="Voting_5_result" class="grid-item-result"></div>
+                <div id="Voting_6_result" class="grid-item-result"></div>
+                <div id="Voting_7_result" class="grid-item-result"></div>
+                <div id="Voting_8_result" class="grid-item-result"></div>
+                <div id="Voting_9_result" class="grid-item-result"></div>
+                <div id="Voting_10_result" class="grid-item-result"></div>
+                <div id="Voting_11_result" class="grid-item-result"></div>
+            </div>
+        </div>
+    </center>
+</div>
+
+<br />
+
+<div id="AgileTeamVoting">  </div>
+
+
+<script>
+
+
+    function selectVoting(id, name) {
+        $("#Voting_1" + name).removeClass("selected");
+        $("#Voting_2" + name).removeClass("selected");
+        $("#Voting_3" + name).removeClass("selected");
+        $("#Voting_4" + name).removeClass("selected");
+        $("#Voting_5" + name).removeClass("selected");
+        $("#Voting_6" + name).removeClass("selected");
+        $("#Voting_7" + name).removeClass("selected");
+        $("#Voting_8" + name).removeClass("selected");
+        $("#Voting_9" + name).removeClass("selected");
+        $("#Voting_10" + name).removeClass("selected");
+
+        $("#Voting_" + id + name).addClass("selected");
+
+        $.post("@Url.Action("SubmitVoting")",
+            {
+                name: name,
+                Voting: id
+            },
+            function (data, status) {
+                //TODO
+                retrieveAgileTeamVoting();
+            });
+
+
+
+    }
+
+    function retrieveAgileTeamVoting() {
+        $.get("@Url.Action("GetVoting")", function (data, status) {
+            var entries = Object.entries(data)
+            console.log(entries)
+
+            $("[id$='_result']").empty();
+
+
+            var values = ["1", "2", "3", "4", "5", "6", "7", "8", "9","10","11"];
+            for (var k = 0; k < entries.length; k++) {
+
+                var span = "<span class='numberCircle'><span>" + values[k] + "</span></span>";
+                if (values[k] == "11") {
+                    span = "<span class='numberCircle'><span>?</span></span>";
+                }
+                $("#Voting_" + values[k]+ "_result").append("<div>" + span + "</div>");
+            }
+            for (var i = 0; i < entries.length; i++) {
+                var id = entries[i][1];
+                var name = entries[i][0];
+
+
+
+                $("#Voting_" + entries[i][1] + "_result").append("<div class='paddingCss'>" + entries[i][0] + "</div>");
+
+                $("#Voting_1" + name).removeClass("selected");
+                $("#Voting_2" + name).removeClass("selected");
+                $("#Voting_3" + name).removeClass("selected");
+                $("#Voting_4" + name).removeClass("selected");
+                $("#Voting_5" + name).removeClass("selected");
+                $("#Voting_6" + name).removeClass("selected");
+                $("#Voting_7" + name).removeClass("selected");
+                $("#Voting_8" + name).removeClass("selected");
+                $("#Voting_9" + name).removeClass("selected");
+                $("#Voting_10" + name).removeClass("selected");
+                $("#Voting_11" + name).removeClass("selected");
+                $("#Voting_" + id + name).addClass("selected");
+            }
+        });
+    }
+
+
+       function FillUsers() {
+        $.get("@Url.Action("GetVoting")", function (data, status) {
+            var entries = Object.entries(data)
+            console.log(entries)
+
+
+            $("#AgileTeamVoting").empty();
+
+
+            for (var i = 0; i < entries.length; i++) {
+
+                if (i % 3 == 0) {
+                    $("#AgileTeamVoting").append("<div class='row'>");
+                }
+                var memberName = "'" + entries[i][0] + "'";
+
+                $("#AgileTeamVoting").append("<div class='col-md-4'><h1>" + entries[i][0] +"</h1>"
+                    + "<div class='grid-container'>"
+                    + "<div id=\"Voting_1" + entries[i][0] + "\" class='grid-item' onclick=\"selectVoting(1," + memberName + ")\" ><img src='/Images/1.jpg' /></div>"
+                    + "<div id=\"Voting_2" + entries[i][0] + "\" class='grid-item' onclick=\"selectVoting(2," + memberName + ")\" ><img src='/Images/2.jpg' /></div>"
+                    + "<div id=\"Voting_3" + entries[i][0] + "\" class='grid-item' onclick=\"selectVoting(3," + memberName + ")\" ><img src='/Images/3.jpg' /></div>"
+                    + "<div id=\"Voting_4" + entries[i][0] + "\" class='grid-item' onclick=\"selectVoting(4," + memberName + ")\" ><img src='/Images/4.jpg' /></div>"
+                    + "<div id=\"Voting_5" + entries[i][0] + "\" class='grid-item' onclick=\"selectVoting(5," + memberName + ")\" ><img src='/Images/5.jpg' /></div>"
+                    + "<div id=\"Voting_6" + entries[i][0] + "\" class='grid-item' onclick=\"selectVoting(6," + memberName + ")\" ><img src='/Images/6.jpg' /></div>"
+                    + "<div id=\"Voting_7" + entries[i][0] + "\" class='grid-item' onclick=\"selectVoting(7," + memberName + ")\" ><img src='/Images/7.jpg' /></div>"
+                    + "<div id=\"Voting_8" + entries[i][0] + "\" class='grid-item' onclick=\"selectVoting(8," + memberName + ")\" ><img src='/Images/8.jpg' /></div>"
+                    + "<div id=\"Voting_9" + entries[i][0] + "\" class='grid-item selected' onclick=\"selectVoting(9," + memberName + ")\" ><img src='/Images/9.jpg' /></div>"
+                    + "<div id=\"Voting_10" + entries[i][0] + "\" class='grid-item selected' onclick=\"selectVoting(10," + memberName + ")\" ><img src='/Images/10.jpg' /></div>"
+                    + "<div id=\"Voting_10" + entries[i][0] + "\" class='grid-item selected' onclick=\"selectVoting(11," + memberName +")\" ><img src='/Images/11.jpg' /></div>"
+
+                    + "</div>"
+                    + "</div>")
+
+                if (i % 3 == 0 || i == entries.length) {
+                    $("#AgileTeamVoting").append("</div>");
+                }
+
+            }
+        });
+    }
+
+        setInterval(retrieveAgileTeamVoting, 5000);
+        FillUsers();
+        retrieveAgileTeamVoting();
+
+</script>
