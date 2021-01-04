@@ -1,13 +1,13 @@
 ﻿
 
-
 @{
     ViewBag.Title = "سفير";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    
+
 }
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <style>
+
     .weight {
         text-align: center;
         vertical-align: middle;
@@ -19,13 +19,13 @@
     .selected {
         border: solid !important;
         color: white !important;
-        background-color: green !important;
+        background-color: lightseagreen !important;
     }
 
     .grid-container {
         display: grid;
         grid-template-columns: auto auto auto;
-        background-color: #2196F3;
+        background-color: black;
         padding: 1px;
         width: 200px;
     }
@@ -51,12 +51,12 @@
     }
 
     .grid-item {
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: white;
         border: 1px solid rgba(0, 0, 0, 0.8);
         padding: 1px;
         font-size: 30px;
         text-align: center;
-        width: 50px;
+        width: 66px;
         Height: 50px;
     }
 
@@ -80,15 +80,15 @@
     .paddingCss {
         padding: 2px;
         text-align: center;
-        width: 50px;
+        width: 20px;
     }
 </style>
 
-
+<br />
+<div id="AgileTeamMembers">  </div>
 <div class="row">
     <center>
         <div class="col-md-12">
-
             <div class="grid-container-result">
                 <div id="weight_1_result" class="grid-item-result"> </div>
                 <div id="weight_3_result" class="grid-item-result"></div>
@@ -103,10 +103,7 @@
         </div>
     </center>
 </div>
-
 <br />
-
-<div id="AgileTeamMembers">  </div>
 
 
 <script>
@@ -189,12 +186,12 @@
 
             for (var i = 0; i < entries.length; i++) {
 
-                if (i % 3 == 0) {
+                if (i % 4 == 0) {
                     $("#AgileTeamMembers").append("<div class='row'>");
                 }
                 var memberName = "'" + entries[i][0] + "'";
 
-                $("#AgileTeamMembers").append("<div class='col-md-4'><h1>" + entries[i][0] +"</h1>"
+                $("#AgileTeamMembers").append("<div class='col-md-4' style='width:25%'><h3>" + entries[i][0] +"</h3>"
                     + "<div class='grid-container'>"
                     + "<div id=\"weight_1" + entries[i][0] + "\" class='grid-item' onclick=\"selectweight(1," + memberName + ")\" >1</div>"
                     + "<div id=\"weight_3" + entries[i][0] + "\" class='grid-item' onclick=\"selectweight(3," + memberName + ")\" >3</div>"
@@ -209,7 +206,7 @@
                     + "</div>"
                     + "</div>")
 
-                if (i % 3 == 0 || i == entries.length) {
+                if (i % 4 == 0 || i == entries.length) {
                     $("#AgileTeamMembers").append("</div>");
                 }
 

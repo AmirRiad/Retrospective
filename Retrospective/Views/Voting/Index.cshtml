@@ -19,7 +19,7 @@
 
     .selected {
         border: solid !important;
-        border-color: green !important;
+        border-color: lightseagreen !important;
     }
 
     .grid-container {
@@ -51,12 +51,12 @@
     }
 
     .grid-item {
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: white;
         border: 1px solid rgba(0, 0, 0, 0.8);
         padding: 1px;
         font-size: 30px;
         text-align: center;
-        width: 50px;
+        width: 66px;
         Height: 50px;
     }
 
@@ -82,18 +82,23 @@
         text-align: center;
         width: 50px;
     }
+
     .votingValueCss {
         padding-top: 50%;
         text-align: center;
-        font-size:larger;
-        font-weight:bold;
-        width:100%
+        font-size: larger;
+        font-weight: bold;
+        width: 100%
     }
+
     .Divtitle {
-        width:100%
+        width: 100%
     }
 </style>
 
+
+<div id="AgileTeamVoting">  </div>
+<br />
 
 <div class="row">
     <center>
@@ -117,9 +122,7 @@
     </center>
 </div>
 
-<br />
 
-<div id="AgileTeamVoting">  </div>
 
 
 <script>
@@ -166,13 +169,13 @@
             for (var k = 0; k < entries.length; k++) {
 
                 var span = "";
-                if (values[k] == "11") 
+                if (values[k] == "11")
                     span = "<span class='numberCircle'><span>?</span></span>";
-                
-                else if (values[k] == "12") 
+
+                else if (values[k] == "12")
                     span = "<span class='numberCircle'><span>Average</span></span>";
-                
-                else 
+
+                else
                     span = "<span class='numberCircle'><span>" + values[k] + "</span></span>";
 
                 $("#Voting_" + values[k]+ "_result").append("<div class='Divtitle'>" + span + "</div>");
@@ -215,12 +218,12 @@
 
             for (var i = 0; i < entries.length-1; i++) {
 
-                if (i % 3 == 0) {
+                if (i % 4 == 0) {
                     $("#AgileTeamVoting").append("<div class='row'>");
                 }
                 var memberName = "'" + entries[i][0] + "'";
 
-                $("#AgileTeamVoting").append("<div class='col-md-4'><h1>" + entries[i][0] +"</h1>"
+                $("#AgileTeamVoting").append("<div class='col-md-4' style='width:25%'><h3>" + entries[i][0] +"</h3>"
                     + "<div class='grid-container'>"
                     + "<div id=\"Voting_1" + entries[i][0] + "\" class='grid-item' onclick=\"selectVoting(1," + memberName + ")\" ><img src='/Images/1.jpg' /></div>"
                     + "<div id=\"Voting_2" + entries[i][0] + "\" class='grid-item' onclick=\"selectVoting(2," + memberName + ")\" ><img src='/Images/2.jpg' /></div>"
@@ -237,7 +240,7 @@
                     + "</div>"
                     + "</div>")
 
-                if (i % 3 == 0 || i == entries.length) {
+                if (i % 4 == 0 || i == entries.length) {
                     $("#AgileTeamVoting").append("</div>");
                 }
 
