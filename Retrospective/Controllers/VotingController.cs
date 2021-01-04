@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Web.Mvc;
 
@@ -19,7 +20,9 @@ namespace Safeer2.UI.Controllers
           { "Alhanouf", "11" },
           { "Bashyer","11" },
           { "Abeer", "11" },
-          { "Ala","11" }
+          { "Ala","11" },
+          { "Average","0.0" },
+
       };
         // GET: Retrospective
         public ActionResult Index()
@@ -39,6 +42,26 @@ namespace Safeer2.UI.Controllers
         }
         public ActionResult GetVoting()
         {
+            var total = 0.0;
+            int count = 0;
+            foreach (var item in AgileTeamVoting)
+            {
+                if (item.Key != "Average")
+                {
+                    var selectedValue = 0.0;
+                    double.TryParse(item.Value, out selectedValue);
+                    if (selectedValue == 11 || selectedValue == 0)
+                        selectedValue = 0;
+                    else
+                    {
+                        count++;
+                        total += selectedValue;
+                    }
+                }
+            }
+            
+            var average = count == 0 ? 0 :total /count;
+            AgileTeamVoting["Average"] =Math.Round(average,2).ToString();
             return Json(AgileTeamVoting, JsonRequestBehavior.AllowGet);
         }
     }

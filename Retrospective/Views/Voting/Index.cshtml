@@ -82,6 +82,16 @@
         text-align: center;
         width: 50px;
     }
+    .votingValueCss {
+        padding-top: 50%;
+        text-align: center;
+        font-size:larger;
+        font-weight:bold;
+        width:100%
+    }
+    .Divtitle {
+        width:100%
+    }
 </style>
 
 
@@ -101,6 +111,7 @@
                 <div id="Voting_9_result" class="grid-item-result"></div>
                 <div id="Voting_10_result" class="grid-item-result"></div>
                 <div id="Voting_11_result" class="grid-item-result"></div>
+                <div id="Voting_12_result" class="grid-item-result"></div>
             </div>
         </div>
     </center>
@@ -125,6 +136,7 @@
         $("#Voting_8" + name).removeClass("selected");
         $("#Voting_9" + name).removeClass("selected");
         $("#Voting_10" + name).removeClass("selected");
+        $("#Voting_11" + name).removeClass("selected");
 
         $("#Voting_" + id + name).addClass("selected");
 
@@ -150,22 +162,30 @@
             $("[id$='_result']").empty();
 
 
-            var values = ["1", "2", "3", "4", "5", "6", "7", "8", "9","10","11"];
+            var values = ["1", "2", "3", "4", "5", "6", "7", "8", "9","10","11","12"];
             for (var k = 0; k < entries.length; k++) {
 
-                var span = "<span class='numberCircle'><span>" + values[k] + "</span></span>";
-                if (values[k] == "11") {
+                var span = "";
+                if (values[k] == "11") 
                     span = "<span class='numberCircle'><span>?</span></span>";
-                }
-                $("#Voting_" + values[k]+ "_result").append("<div>" + span + "</div>");
+                
+                else if (values[k] == "12") 
+                    span = "<span class='numberCircle'><span>Average</span></span>";
+                
+                else 
+                    span = "<span class='numberCircle'><span>" + values[k] + "</span></span>";
+
+                $("#Voting_" + values[k]+ "_result").append("<div class='Divtitle'>" + span + "</div>");
             }
             for (var i = 0; i < entries.length; i++) {
                 var id = entries[i][1];
                 var name = entries[i][0];
 
 
-
-                $("#Voting_" + entries[i][1] + "_result").append("<div class='paddingCss'>" + entries[i][0] + "</div>");
+                if (name == "Average")
+                    $("#Voting_12_result").append("<span class='votingValueCss'>" + id + "</span>");
+                else
+                    $("#Voting_" + id + "_result").append("<div class='paddingCss'>" + name + "</div>");
 
                 $("#Voting_1" + name).removeClass("selected");
                 $("#Voting_2" + name).removeClass("selected");
@@ -193,7 +213,7 @@
             $("#AgileTeamVoting").empty();
 
 
-            for (var i = 0; i < entries.length; i++) {
+            for (var i = 0; i < entries.length-1; i++) {
 
                 if (i % 3 == 0) {
                     $("#AgileTeamVoting").append("<div class='row'>");
@@ -212,7 +232,7 @@
                     + "<div id=\"Voting_8" + entries[i][0] + "\" class='grid-item' onclick=\"selectVoting(8," + memberName + ")\" ><img src='/Images/8.jpg' /></div>"
                     + "<div id=\"Voting_9" + entries[i][0] + "\" class='grid-item selected' onclick=\"selectVoting(9," + memberName + ")\" ><img src='/Images/9.jpg' /></div>"
                     + "<div id=\"Voting_10" + entries[i][0] + "\" class='grid-item selected' onclick=\"selectVoting(10," + memberName + ")\" ><img src='/Images/10.jpg' /></div>"
-                    + "<div id=\"Voting_10" + entries[i][0] + "\" class='grid-item selected' onclick=\"selectVoting(11," + memberName +")\" ><img src='/Images/11.jpg' /></div>"
+                    + "<div id=\"Voting_11" + entries[i][0] + "\" class='grid-item selected' onclick=\"selectVoting(11," + memberName +")\" ><img src='/Images/11.jpg' /></div>"
 
                     + "</div>"
                     + "</div>")
@@ -225,7 +245,7 @@
         });
     }
 
-        setInterval(retrieveAgileTeamVoting, 5000);
+        setInterval(retrieveAgileTeamVoting, 50000);
         FillUsers();
         retrieveAgileTeamVoting();
 
