@@ -3,6 +3,7 @@ using Retrospective.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
@@ -25,7 +26,7 @@ namespace Safeer2.UI.Controllers
                 if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
                 {
                     string fileName = file.FileName;
-                    string path = Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["XlsFilePath"] + fileName);
+                    string path = Server.MapPath("~") + "\\ExcelFiles\\"+ fileName;
                     file.SaveAs(path);
                     if (!System.IO.Directory.Exists(Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["XlsFilePath"])))
                     {
@@ -72,23 +73,63 @@ namespace Safeer2.UI.Controllers
                                     else if (i == 4 || i == 5)
                                         sprintComment.SprintCategoryId = (int)SprintCategory.WhatCouldBeImproved;
 
+                                    //Add Action Plan
+                                    var memberId = GetMemeberId(item.ItemArray[10].ToString());
+                                    var planName = item.ItemArray[11].ToString();
+                                    if (!string.IsNullOrEmpty(planName))
+                                    {
+                                        var actionPlan = new ActionPlan
+                                        {
+                                            FollwingUpByMemberId = memberId,
+                                            SprintCommentId = sprint.Id
+                                        };
+                                        var actionPlanDecisions = new List<ActionPlanDecision>();
+                                        //ActionPlanDecisions
+                                        for (int k = 12; k < 18; k++)
+                                        {
+                                            var decision = item.ItemArray[k].ToString();
+                                            if (!string.IsNullOrEmpty(decision))
+                                            {
+                                                var actionPlanDecision = new ActionPlanDecision
+                                                {
+                                                    ActionPlanId = actionPlan.Id,
+                                                    Decision = decision
+                                                };
+                                                actionPlanDecisions.Add(actionPlanDecision);
+                                            }
+                                        }
+
+                                        sprintComment.ActionPlans.Add(actionPlan);
+                                    }
+
+
                                     sprintComments.Add(sprintComment);
                                 }
                             }
-                        }
 
-                        //ActionPlans
+
+                           
+                        }
                         
                         count++;
 
                     }
                     sprint.SprintComments = sprintComments;
+                  
                     SaveFromExceltoDbAsync(sprint);
                 }
             }
             return View("Index");
         }
 
+        private int GetMemeberId(string memberName)
+        {
+            using (var ctx = GetRetrospectiveToolsContext())
+            {
+                var selecteduser = ctx.AgileMembers.FirstOrDefault(o=> o.FullName.Contains(memberName));
+                return selecteduser?.Id ?? (int)AgileMember.AllSpaceXTeam;
+            }
+        }
 
         internal static RetrospectiveToolsContext GetRetrospectiveToolsContext()
         {
