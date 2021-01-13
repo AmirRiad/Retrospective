@@ -57,9 +57,13 @@ namespace Safeer2.UI.Controllers
                         //sprint comments
                         else if (count > 0 && count < lastCountForComment)
                         {
+                            var memberId = GetMemeberId(item.ItemArray[10].ToString());
+                            var planName = item.ItemArray[11].ToString();
+
                             for (int i = 0; i < 6; i++)
                             {
                                 var commentName = item.ItemArray[i].ToString();
+                                
                                 if (!string.IsNullOrEmpty(commentName))
                                 {
                                     var sprintComment = new SprintComment();
@@ -74,8 +78,7 @@ namespace Safeer2.UI.Controllers
                                         sprintComment.SprintCategoryId = (int)SprintCategory.WhatCouldBeImproved;
 
                                     //Add Action Plan
-                                    var memberId = GetMemeberId(item.ItemArray[10].ToString());
-                                    var planName = item.ItemArray[11].ToString();
+                                    
                                     if (!string.IsNullOrEmpty(planName))
                                     {
                                         var actionPlan = new ActionPlan
