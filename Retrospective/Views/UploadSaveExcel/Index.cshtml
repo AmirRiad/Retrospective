@@ -5,22 +5,28 @@
 }
 @using (Html.BeginForm("Import", "UploadSaveExcel", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <table>
-        <tr>
-            <td>Select File : </td>
-            <td>
-                <input type="file" name="UploadedFile" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Import Data :
-            </td>
-            <td>
-                <input type="submit" name="Import" value="Import from Excel" />
-            </td>
-        </tr>
-    </table>
+<table>
+    <tr>
+        <td>Select File : </td>
+        <td>
+            <input type="file" name="UploadedFile" />
+        </td>
+    </tr>
+    <tr>
+        <td>Sheet Name : </td>
+        <td>
+            <input type="text" name="sheetName" value="Sprint 21" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Import Data :
+        </td>
+        <td>
+            <input type="submit" name="Import" value="Import from Excel" />
+        </td>
+    </tr>
+</table>
 }
 @*<br />
 @using (Html.BeginForm("Export", "Home"))

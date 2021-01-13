@@ -3,10 +3,8 @@ using Retrospective.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.UI;
 
 namespace Safeer2.UI.Controllers
 {
@@ -14,10 +12,10 @@ namespace Safeer2.UI.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.EmployeeList = "";
             return View();
         }
 
+        [HttpPost]
         public ActionResult Import(FormCollection formCollection)
         {
             if (Request != null && formCollection.Count > 0)
@@ -34,12 +32,13 @@ namespace Safeer2.UI.Controllers
                         System.IO.Directory.CreateDirectory(Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["XlsFilePath"]));
                     }
                     var excelData = new ExcelData(path);
-                    var sData = excelData.getData("Sprint 21");
+                    var sData = excelData.getData(Request["sheetName"]);
                     
                     dt = sData.CopyToDataTable();
                     var sprint = new Sprint();
                     var sprintComments = new List<SprintComment>();
                     var count = 0;
+                    var lastCountForComment = dt.Rows.Count;
                     foreach (DataRow item in dt.Rows)
                     {
                         //sprint
@@ -51,8 +50,11 @@ namespace Safeer2.UI.Controllers
                             sprint.EndDate = DateTime.Now;
                         }
 
+                        if (item.ItemArray[0].ToString() == "Sprint Score")
+                            lastCountForComment = count;
+
                         //sprint comments
-                        else if (count >= 0 && count <12)
+                        else if (count > 0 && count < lastCountForComment)
                         {
                             for (int i = 0; i < 6; i++)
                             {
