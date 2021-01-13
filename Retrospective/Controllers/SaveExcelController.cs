@@ -41,6 +41,8 @@ namespace Safeer2.UI.Controllers
                     var sprintComments = new List<SprintComment>();
                     var count = 0;
                     var lastCountForComment = dt.Rows.Count;
+                    
+
 
                     foreach (DataRow item in dt.Rows)
                     {
@@ -53,37 +55,54 @@ namespace Safeer2.UI.Controllers
                         if (item.ItemArray[0].ToString() == "Sprint Score")
                             lastCountForComment = count;
 
-                        //sprint comments & Action Plans & Decisions
+                        //sprint comments 
                         else if (count > 0 && count < lastCountForComment)
                         {
-                            var memberId = GetMemeberId(item.ItemArray[10].ToString());
-                            var planName = item.ItemArray[11].ToString();
                             for (int columnIndex = 0; columnIndex < 6; columnIndex++)
                             {
                                 var commentName = item.ItemArray[columnIndex].ToString();
                                 if (!string.IsNullOrEmpty(commentName))
                                 {
                                     SprintComment sprintComment = AddSprintComment(sprint.Id, columnIndex, commentName);
-                                    if (planName.ToLower().Contains(commentName.ToLower()))
-                                        AddActionPlansAndDecisions(sprint, item, memberId, planName, sprintComment);
                                     sprintComments.Add(sprintComment);
                                 }
                             }
-
-                            //Add Plan As comment in case not found in comments
-                            var iscommnetFoundByPlan = sprintComments.Any(o => planName.ToLower().Contains(o.Name.ToLower())); 
-                            if (!iscommnetFoundByPlan)
-                            {
-                                SprintComment sprintComment = AddSprintComment(sprint.Id, 5, planName);
-                                AddActionPlansAndDecisions(sprint, item, memberId, planName, sprintComment);
-                                sprintComments.Add(sprintComment);
-                            }
-
                         }
                         
                         count++;
+                    }
+
+                    // Adding actionplans and  decisions
+                    count = 0;
+                    foreach (DataRow item in dt.Rows)
+                    {
+
+                        if (item.ItemArray[0].ToString() == "Sprint Score")
+                            lastCountForComment = count;
+
+                        //sprint comments & Action Plans & Decisions
+                        else if (count > 0 && count < lastCountForComment)
+                        {
+                            var memberId = GetMemeberId(item.ItemArray[10].ToString());
+                            var planName = item.ItemArray[11].ToString();
+
+                            var sprintComment= sprintComments.FirstOrDefault(o => planName.ToLower().Contains(o.Name.ToLower()));
+                            if (sprintComment != null)
+                                AddActionPlansAndDecisions(sprint, item, memberId, planName, sprintComment);
+                            else
+                            {
+                                var newCommentFromActionPlan = AddSprintComment(sprint.Id, 5, planName);
+                                AddActionPlansAndDecisions(sprint, item, memberId, planName, newCommentFromActionPlan);
+                                sprintComments.Add(newCommentFromActionPlan);
+                            }
+
+                        }
+
+                        count++;
 
                     }
+
+
                     sprint.SprintComments = sprintComments;
                     SaveFromExceltoDbAsync(sprint);
                 }
