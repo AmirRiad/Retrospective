@@ -52,7 +52,7 @@ namespace Safeer2.UI.Controllers
                         }
 
                         //sprint comments
-                        else if (count >= 0 && count < 13)
+                        else if (count >= 0 && count <12)
                         {
                             for (int i = 0; i < 6; i++)
                             {
@@ -64,11 +64,11 @@ namespace Safeer2.UI.Controllers
                                     sprintComment.Name = commentName;
                                     sprintComment.SprintId = sprint.Id;
                                     if (i == 0 || i == 1)
-                                        sprintComment.SprintCategoryId = (int)SprintCategory.WhatCouldBeImproved;
-                                    else if (i == 2 || i == 3)
                                         sprintComment.SprintCategoryId = (int)SprintCategory.WhatDidWeDoWell;
-                                    else if (i == 4 || i == 5)
+                                    else if (i == 2 || i == 3)
                                         sprintComment.SprintCategoryId = (int)SprintCategory.WhatDidWeDoWrong;
+                                    else if (i == 4 || i == 5)
+                                        sprintComment.SprintCategoryId = (int)SprintCategory.WhatCouldBeImproved;
 
                                     sprintComments.Add(sprintComment);
                                 }

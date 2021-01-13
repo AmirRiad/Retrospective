@@ -43,7 +43,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="250" Nullable="false" />
           <Property Name="SafeerTeamId" Type="int" Nullable="false" />
           <Property Name="AverageEvaluation" Type="float" />
@@ -63,7 +63,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="bigint" Nullable="false" />
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="SprintCategoryId" Type="int" Nullable="false" />
           <Property Name="MemberId" Type="int" />
