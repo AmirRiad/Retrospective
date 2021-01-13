@@ -147,7 +147,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\UploadSaveExcelController.cs" />
+    <Compile Include="Controllers\SaveExcelController.cs" />
     <Compile Include="Controllers\VotingController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\EstimationController.cs" />
@@ -269,7 +269,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Estimation\Index.cshtml" />
     <Content Include="Views\Voting\Index.cshtml" />
-    <Content Include="Views\UploadSaveExcel\Index.cshtml" />
+    <Content Include="Views\SaveExcel\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

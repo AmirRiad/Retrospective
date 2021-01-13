@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace Safeer2.UI.Controllers
 {
-    public class UploadSaveExcelController : Controller
+    public class SaveExcelController : Controller
     {
         public ActionResult Index()
         {
