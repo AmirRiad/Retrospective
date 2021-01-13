@@ -64,14 +64,14 @@ namespace Safeer2.UI.Controllers
                                 if (!string.IsNullOrEmpty(commentName))
                                 {
                                     SprintComment sprintComment = AddSprintComment(sprint.Id, columnIndex, commentName);
-                                    if (planName.Contains(commentName))
+                                    if (planName.ToLower().Contains(commentName.ToLower()))
                                         AddActionPlansAndDecisions(sprint, item, memberId, planName, sprintComment);
                                     sprintComments.Add(sprintComment);
                                 }
                             }
 
                             //Add Plan As comment in case not found in comments
-                            var iscommnetFoundByPlan = sprintComments.Any(o => planName.Contains(o.Name)); 
+                            var iscommnetFoundByPlan = sprintComments.Any(o => planName.ToLower().Contains(o.Name.ToLower())); 
                             if (!iscommnetFoundByPlan)
                             {
                                 SprintComment sprintComment = AddSprintComment(sprint.Id, 5, planName);
@@ -154,7 +154,7 @@ namespace Safeer2.UI.Controllers
         {
             using (var ctx = GetRetrospectiveToolsContext())
             {
-                var selecteduser = ctx.AgileMembers.FirstOrDefault(o=> o.FullName.Contains(memberName));
+                var selecteduser = ctx.AgileMembers.FirstOrDefault(o=> o.FullName.ToLower().Contains(memberName.ToLower()));
                 return selecteduser?.Id ?? (int)AgileMember.AllSpaceXTeam;
             }
         }
