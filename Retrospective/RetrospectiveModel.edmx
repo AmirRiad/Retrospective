@@ -1,0 +1,762 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SafeerRetrospectiveToolsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ActionPlan">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" Nullable="false" />
+          <Property Name="SprintCommentId" Type="bigint" />
+          <Property Name="FollwingUpByMemberId" Type="int" />
+        </EntityType>
+        <EntityType Name="ActionPlanDecisions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ActionPlanId" Type="bigint" />
+          <Property Name="Decision" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="AgileMember">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="250" />
+          <Property Name="Mobile" Type="nvarchar" MaxLength="50" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="CurrentTeamId" Type="int" />
+        </EntityType>
+        <EntityType Name="SafeerTeam">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="Sprint">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="SafeerTeamId" Type="int" Nullable="false" />
+          <Property Name="AverageEvaluation" Type="float" />
+          <Property Name="AverageVoting" Type="float" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="IsClosed" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SprintCategory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="SprintComments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="SprintCategoryId" Type="int" Nullable="false" />
+          <Property Name="MemberId" Type="int" />
+          <Property Name="SprintId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SprintEvaluation">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" Nullable="false" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
+          <Property Name="SprintId" Type="int" Nullable="false" />
+          <Property Name="Value" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserStory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="JiraUrl" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="CreatedByMemberId" Type="int" />
+          <Property Name="IsClosed" Type="bit" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="SprintId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="4000" />
+        </EntityType>
+        <EntityType Name="UserStoryAssignmentMembers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="MemberId" Type="int" Nullable="false" />
+          <Property Name="UserStoryId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_ActionPlan_SprintComments">
+          <End Role="SprintComments" Type="Self.SprintComments" Multiplicity="0..1" />
+          <End Role="ActionPlan" Type="Self.ActionPlan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SprintComments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionPlan">
+              <PropertyRef Name="SprintCommentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionPlanDetails_ActionPlan">
+          <End Role="ActionPlan" Type="Self.ActionPlan" Multiplicity="0..1" />
+          <End Role="ActionPlanDecisions" Type="Self.ActionPlanDecisions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ActionPlan">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionPlanDecisions">
+              <PropertyRef Name="ActionPlanId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sprint_SafeerTeam">
+          <End Role="SafeerTeam" Type="Self.SafeerTeam" Multiplicity="1" />
+          <End Role="Sprint" Type="Self.Sprint" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SafeerTeam">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Sprint">
+              <PropertyRef Name="SafeerTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SprintComments_Sprint">
+          <End Role="Sprint" Type="Self.Sprint" Multiplicity="1" />
+          <End Role="SprintComments" Type="Self.SprintComments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sprint">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SprintComments">
+              <PropertyRef Name="SprintId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SprintComments_SprintCategory">
+          <End Role="SprintCategory" Type="Self.SprintCategory" Multiplicity="1" />
+          <End Role="SprintComments" Type="Self.SprintComments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SprintCategory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SprintComments">
+              <PropertyRef Name="SprintCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SprintEvaluation_AgileMember">
+          <End Role="AgileMember" Type="Self.AgileMember" Multiplicity="1" />
+          <End Role="SprintEvaluation" Type="Self.SprintEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AgileMember">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SprintEvaluation">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SprintEvaluation_Sprint">
+          <End Role="Sprint" Type="Self.Sprint" Multiplicity="1" />
+          <End Role="SprintEvaluation" Type="Self.SprintEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sprint">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SprintEvaluation">
+              <PropertyRef Name="SprintId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserStory_Sprint">
+          <End Role="Sprint" Type="Self.Sprint" Multiplicity="1" />
+          <End Role="UserStory" Type="Self.UserStory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sprint">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserStory">
+              <PropertyRef Name="SprintId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserStoryAssignmentMembers_UserStory">
+          <End Role="UserStory" Type="Self.UserStory" Multiplicity="1" />
+          <End Role="UserStoryAssignmentMembers" Type="Self.UserStoryAssignmentMembers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserStory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserStoryAssignmentMembers">
+              <PropertyRef Name="UserStoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="SafeerRetrospectiveToolsModelStoreContainer">
+          <EntitySet Name="ActionPlan" EntityType="Self.ActionPlan" Schema="Retrospective" store:Type="Tables" />
+          <EntitySet Name="ActionPlanDecisions" EntityType="Self.ActionPlanDecisions" Schema="Retrospective" store:Type="Tables" />
+          <EntitySet Name="AgileMember" EntityType="Self.AgileMember" Schema="Retrospective" store:Type="Tables" />
+          <EntitySet Name="SafeerTeam" EntityType="Self.SafeerTeam" Schema="Retrospective" store:Type="Tables" />
+          <EntitySet Name="Sprint" EntityType="Self.Sprint" Schema="Retrospective" store:Type="Tables" />
+          <EntitySet Name="SprintCategory" EntityType="Self.SprintCategory" Schema="Retrospective" store:Type="Tables" />
+          <EntitySet Name="SprintComments" EntityType="Self.SprintComments" Schema="Retrospective" store:Type="Tables" />
+          <EntitySet Name="SprintEvaluation" EntityType="Self.SprintEvaluation" Schema="Retrospective" store:Type="Tables" />
+          <EntitySet Name="UserStory" EntityType="Self.UserStory" Schema="Retrospective" store:Type="Tables" />
+          <EntitySet Name="UserStoryAssignmentMembers" EntityType="Self.UserStoryAssignmentMembers" Schema="Retrospective" store:Type="Tables" />
+          <AssociationSet Name="FK_ActionPlan_SprintComments" Association="Self.FK_ActionPlan_SprintComments">
+            <End Role="SprintComments" EntitySet="SprintComments" />
+            <End Role="ActionPlan" EntitySet="ActionPlan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionPlanDetails_ActionPlan" Association="Self.FK_ActionPlanDetails_ActionPlan">
+            <End Role="ActionPlan" EntitySet="ActionPlan" />
+            <End Role="ActionPlanDecisions" EntitySet="ActionPlanDecisions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sprint_SafeerTeam" Association="Self.FK_Sprint_SafeerTeam">
+            <End Role="SafeerTeam" EntitySet="SafeerTeam" />
+            <End Role="Sprint" EntitySet="Sprint" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SprintComments_Sprint" Association="Self.FK_SprintComments_Sprint">
+            <End Role="Sprint" EntitySet="Sprint" />
+            <End Role="SprintComments" EntitySet="SprintComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SprintComments_SprintCategory" Association="Self.FK_SprintComments_SprintCategory">
+            <End Role="SprintCategory" EntitySet="SprintCategory" />
+            <End Role="SprintComments" EntitySet="SprintComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SprintEvaluation_AgileMember" Association="Self.FK_SprintEvaluation_AgileMember">
+            <End Role="AgileMember" EntitySet="AgileMember" />
+            <End Role="SprintEvaluation" EntitySet="SprintEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SprintEvaluation_Sprint" Association="Self.FK_SprintEvaluation_Sprint">
+            <End Role="Sprint" EntitySet="Sprint" />
+            <End Role="SprintEvaluation" EntitySet="SprintEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserStory_Sprint" Association="Self.FK_UserStory_Sprint">
+            <End Role="Sprint" EntitySet="Sprint" />
+            <End Role="UserStory" EntitySet="UserStory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserStoryAssignmentMembers_UserStory" Association="Self.FK_UserStoryAssignmentMembers_UserStory">
+            <End Role="UserStory" EntitySet="UserStory" />
+            <End Role="UserStoryAssignmentMembers" EntitySet="UserStoryAssignmentMembers" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SafeerRetrospectiveToolsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="RetrospectiveToolsContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ActionPlans" EntityType="SafeerRetrospectiveToolsModel.ActionPlan" />
+          <EntitySet Name="ActionPlanDecisions" EntityType="SafeerRetrospectiveToolsModel.ActionPlanDecision" />
+          <EntitySet Name="AgileMembers" EntityType="SafeerRetrospectiveToolsModel.AgileMember" />
+          <EntitySet Name="SafeerTeams" EntityType="SafeerRetrospectiveToolsModel.SafeerTeam" />
+          <EntitySet Name="Sprints" EntityType="SafeerRetrospectiveToolsModel.Sprint" />
+          <EntitySet Name="SprintCategories" EntityType="SafeerRetrospectiveToolsModel.SprintCategory" />
+          <EntitySet Name="SprintComments" EntityType="SafeerRetrospectiveToolsModel.SprintComment" />
+          <EntitySet Name="SprintEvaluations" EntityType="SafeerRetrospectiveToolsModel.SprintEvaluation" />
+          <EntitySet Name="UserStories" EntityType="SafeerRetrospectiveToolsModel.UserStory" />
+          <EntitySet Name="UserStoryAssignmentMembers" EntityType="SafeerRetrospectiveToolsModel.UserStoryAssignmentMember" />
+          <AssociationSet Name="FK_ActionPlan_SprintComments" Association="SafeerRetrospectiveToolsModel.FK_ActionPlan_SprintComments">
+            <End Role="SprintComment" EntitySet="SprintComments" />
+            <End Role="ActionPlan" EntitySet="ActionPlans" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActionPlanDetails_ActionPlan" Association="SafeerRetrospectiveToolsModel.FK_ActionPlanDetails_ActionPlan">
+            <End Role="ActionPlan" EntitySet="ActionPlans" />
+            <End Role="ActionPlanDecision" EntitySet="ActionPlanDecisions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SprintEvaluation_AgileMember" Association="SafeerRetrospectiveToolsModel.FK_SprintEvaluation_AgileMember">
+            <End Role="AgileMember" EntitySet="AgileMembers" />
+            <End Role="SprintEvaluation" EntitySet="SprintEvaluations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Sprint_SafeerTeam" Association="SafeerRetrospectiveToolsModel.FK_Sprint_SafeerTeam">
+            <End Role="SafeerTeam" EntitySet="SafeerTeams" />
+            <End Role="Sprint" EntitySet="Sprints" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SprintComments_Sprint" Association="SafeerRetrospectiveToolsModel.FK_SprintComments_Sprint">
+            <End Role="Sprint" EntitySet="Sprints" />
+            <End Role="SprintComment" EntitySet="SprintComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SprintEvaluation_Sprint" Association="SafeerRetrospectiveToolsModel.FK_SprintEvaluation_Sprint">
+            <End Role="Sprint" EntitySet="Sprints" />
+            <End Role="SprintEvaluation" EntitySet="SprintEvaluations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserStory_Sprint" Association="SafeerRetrospectiveToolsModel.FK_UserStory_Sprint">
+            <End Role="Sprint" EntitySet="Sprints" />
+            <End Role="UserStory" EntitySet="UserStories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SprintComments_SprintCategory" Association="SafeerRetrospectiveToolsModel.FK_SprintComments_SprintCategory">
+            <End Role="SprintCategory" EntitySet="SprintCategories" />
+            <End Role="SprintComment" EntitySet="SprintComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserStoryAssignmentMembers_UserStory" Association="SafeerRetrospectiveToolsModel.FK_UserStoryAssignmentMembers_UserStory">
+            <End Role="UserStory" EntitySet="UserStories" />
+            <End Role="UserStoryAssignmentMember" EntitySet="UserStoryAssignmentMembers" />
+          </AssociationSet>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(SafeerRetrospectiveToolsModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(SafeerRetrospectiveToolsModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+        </EntityContainer>
+        <EntityType Name="ActionPlan">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="SprintCommentId" Type="Int64" />
+          <Property Name="FollwingUpByMemberId" Type="Int32" />
+          <NavigationProperty Name="SprintComment" Relationship="SafeerRetrospectiveToolsModel.FK_ActionPlan_SprintComments" FromRole="ActionPlan" ToRole="SprintComment" />
+          <NavigationProperty Name="ActionPlanDecisions" Relationship="SafeerRetrospectiveToolsModel.FK_ActionPlanDetails_ActionPlan" FromRole="ActionPlan" ToRole="ActionPlanDecision" />
+        </EntityType>
+        <EntityType Name="ActionPlanDecision">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ActionPlanId" Type="Int64" />
+          <Property Name="Decision" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ActionPlan" Relationship="SafeerRetrospectiveToolsModel.FK_ActionPlanDetails_ActionPlan" FromRole="ActionPlanDecision" ToRole="ActionPlan" />
+        </EntityType>
+        <EntityType Name="AgileMember">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CurrentTeamId" Type="Int32" />
+          <NavigationProperty Name="SprintEvaluations" Relationship="SafeerRetrospectiveToolsModel.FK_SprintEvaluation_AgileMember" FromRole="AgileMember" ToRole="SprintEvaluation" />
+        </EntityType>
+        <EntityType Name="SafeerTeam">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Sprints" Relationship="SafeerRetrospectiveToolsModel.FK_Sprint_SafeerTeam" FromRole="SafeerTeam" ToRole="Sprint" />
+        </EntityType>
+        <EntityType Name="Sprint">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SafeerTeamId" Type="Int32" Nullable="false" />
+          <Property Name="AverageEvaluation" Type="Double" />
+          <Property Name="AverageVoting" Type="Double" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsClosed" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="SafeerTeam" Relationship="SafeerRetrospectiveToolsModel.FK_Sprint_SafeerTeam" FromRole="Sprint" ToRole="SafeerTeam" />
+          <NavigationProperty Name="SprintComments" Relationship="SafeerRetrospectiveToolsModel.FK_SprintComments_Sprint" FromRole="Sprint" ToRole="SprintComment" />
+          <NavigationProperty Name="SprintEvaluations" Relationship="SafeerRetrospectiveToolsModel.FK_SprintEvaluation_Sprint" FromRole="Sprint" ToRole="SprintEvaluation" />
+          <NavigationProperty Name="UserStories" Relationship="SafeerRetrospectiveToolsModel.FK_UserStory_Sprint" FromRole="Sprint" ToRole="UserStory" />
+        </EntityType>
+        <EntityType Name="SprintCategory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SprintComments" Relationship="SafeerRetrospectiveToolsModel.FK_SprintComments_SprintCategory" FromRole="SprintCategory" ToRole="SprintComment" />
+        </EntityType>
+        <EntityType Name="SprintComment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="SprintCategoryId" Type="Int32" Nullable="false" />
+          <Property Name="MemberId" Type="Int32" />
+          <Property Name="SprintId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ActionPlans" Relationship="SafeerRetrospectiveToolsModel.FK_ActionPlan_SprintComments" FromRole="SprintComment" ToRole="ActionPlan" />
+          <NavigationProperty Name="Sprint" Relationship="SafeerRetrospectiveToolsModel.FK_SprintComments_Sprint" FromRole="SprintComment" ToRole="Sprint" />
+          <NavigationProperty Name="SprintCategory" Relationship="SafeerRetrospectiveToolsModel.FK_SprintComments_SprintCategory" FromRole="SprintComment" ToRole="SprintCategory" />
+        </EntityType>
+        <EntityType Name="SprintEvaluation">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="SprintId" Type="Int32" Nullable="false" />
+          <Property Name="Value" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AgileMember" Relationship="SafeerRetrospectiveToolsModel.FK_SprintEvaluation_AgileMember" FromRole="SprintEvaluation" ToRole="AgileMember" />
+          <NavigationProperty Name="Sprint" Relationship="SafeerRetrospectiveToolsModel.FK_SprintEvaluation_Sprint" FromRole="SprintEvaluation" ToRole="Sprint" />
+        </EntityType>
+        <EntityType Name="UserStory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="JiraUrl" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedByMemberId" Type="Int32" />
+          <Property Name="IsClosed" Type="Boolean" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="SprintId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Sprint" Relationship="SafeerRetrospectiveToolsModel.FK_UserStory_Sprint" FromRole="UserStory" ToRole="Sprint" />
+          <NavigationProperty Name="UserStoryAssignmentMembers" Relationship="SafeerRetrospectiveToolsModel.FK_UserStoryAssignmentMembers_UserStory" FromRole="UserStory" ToRole="UserStoryAssignmentMember" />
+        </EntityType>
+        <EntityType Name="UserStoryAssignmentMember">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="MemberId" Type="Int32" Nullable="false" />
+          <Property Name="UserStoryId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="UserStory" Relationship="SafeerRetrospectiveToolsModel.FK_UserStoryAssignmentMembers_UserStory" FromRole="UserStoryAssignmentMember" ToRole="UserStory" />
+        </EntityType>
+        <Association Name="FK_ActionPlan_SprintComments">
+          <End Type="SafeerRetrospectiveToolsModel.SprintComment" Role="SprintComment" Multiplicity="0..1" />
+          <End Type="SafeerRetrospectiveToolsModel.ActionPlan" Role="ActionPlan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SprintComment">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionPlan">
+              <PropertyRef Name="SprintCommentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActionPlanDetails_ActionPlan">
+          <End Type="SafeerRetrospectiveToolsModel.ActionPlan" Role="ActionPlan" Multiplicity="0..1" />
+          <End Type="SafeerRetrospectiveToolsModel.ActionPlanDecision" Role="ActionPlanDecision" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ActionPlan">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ActionPlanDecision">
+              <PropertyRef Name="ActionPlanId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SprintEvaluation_AgileMember">
+          <End Type="SafeerRetrospectiveToolsModel.AgileMember" Role="AgileMember" Multiplicity="1" />
+          <End Type="SafeerRetrospectiveToolsModel.SprintEvaluation" Role="SprintEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AgileMember">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SprintEvaluation">
+              <PropertyRef Name="MemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Sprint_SafeerTeam">
+          <End Type="SafeerRetrospectiveToolsModel.SafeerTeam" Role="SafeerTeam" Multiplicity="1" />
+          <End Type="SafeerRetrospectiveToolsModel.Sprint" Role="Sprint" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SafeerTeam">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Sprint">
+              <PropertyRef Name="SafeerTeamId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SprintComments_Sprint">
+          <End Type="SafeerRetrospectiveToolsModel.Sprint" Role="Sprint" Multiplicity="1" />
+          <End Type="SafeerRetrospectiveToolsModel.SprintComment" Role="SprintComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sprint">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SprintComment">
+              <PropertyRef Name="SprintId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SprintEvaluation_Sprint">
+          <End Type="SafeerRetrospectiveToolsModel.Sprint" Role="Sprint" Multiplicity="1" />
+          <End Type="SafeerRetrospectiveToolsModel.SprintEvaluation" Role="SprintEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sprint">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SprintEvaluation">
+              <PropertyRef Name="SprintId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserStory_Sprint">
+          <End Type="SafeerRetrospectiveToolsModel.Sprint" Role="Sprint" Multiplicity="1" />
+          <End Type="SafeerRetrospectiveToolsModel.UserStory" Role="UserStory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sprint">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserStory">
+              <PropertyRef Name="SprintId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SprintComments_SprintCategory">
+          <End Type="SafeerRetrospectiveToolsModel.SprintCategory" Role="SprintCategory" Multiplicity="1" />
+          <End Type="SafeerRetrospectiveToolsModel.SprintComment" Role="SprintComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SprintCategory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SprintComment">
+              <PropertyRef Name="SprintCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserStoryAssignmentMembers_UserStory">
+          <End Type="SafeerRetrospectiveToolsModel.UserStory" Role="UserStory" Multiplicity="1" />
+          <End Type="SafeerRetrospectiveToolsModel.UserStoryAssignmentMember" Role="UserStoryAssignmentMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserStory">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserStoryAssignmentMember">
+              <PropertyRef Name="UserStoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SafeerRetrospectiveToolsModelStoreContainer" CdmEntityContainer="RetrospectiveToolsContext">
+          <EntitySetMapping Name="ActionPlans">
+            <EntityTypeMapping TypeName="SafeerRetrospectiveToolsModel.ActionPlan">
+              <MappingFragment StoreEntitySet="ActionPlan">
+                <ScalarProperty Name="FollwingUpByMemberId" ColumnName="FollwingUpByMemberId" />
+                <ScalarProperty Name="SprintCommentId" ColumnName="SprintCommentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActionPlanDecisions">
+            <EntityTypeMapping TypeName="SafeerRetrospectiveToolsModel.ActionPlanDecision">
+              <MappingFragment StoreEntitySet="ActionPlanDecisions">
+                <ScalarProperty Name="Decision" ColumnName="Decision" />
+                <ScalarProperty Name="ActionPlanId" ColumnName="ActionPlanId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AgileMembers">
+            <EntityTypeMapping TypeName="SafeerRetrospectiveToolsModel.AgileMember">
+              <MappingFragment StoreEntitySet="AgileMember">
+                <ScalarProperty Name="CurrentTeamId" ColumnName="CurrentTeamId" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SafeerTeams">
+            <EntityTypeMapping TypeName="SafeerRetrospectiveToolsModel.SafeerTeam">
+              <MappingFragment StoreEntitySet="SafeerTeam">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sprints">
+            <EntityTypeMapping TypeName="SafeerRetrospectiveToolsModel.Sprint">
+              <MappingFragment StoreEntitySet="Sprint">
+                <ScalarProperty Name="IsClosed" ColumnName="IsClosed" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="AverageVoting" ColumnName="AverageVoting" />
+                <ScalarProperty Name="AverageEvaluation" ColumnName="AverageEvaluation" />
+                <ScalarProperty Name="SafeerTeamId" ColumnName="SafeerTeamId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SprintCategories">
+            <EntityTypeMapping TypeName="SafeerRetrospectiveToolsModel.SprintCategory">
+              <MappingFragment StoreEntitySet="SprintCategory">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SprintComments">
+            <EntityTypeMapping TypeName="SafeerRetrospectiveToolsModel.SprintComment">
+              <MappingFragment StoreEntitySet="SprintComments">
+                <ScalarProperty Name="SprintId" ColumnName="SprintId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="SprintCategoryId" ColumnName="SprintCategoryId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SprintEvaluations">
+            <EntityTypeMapping TypeName="SafeerRetrospectiveToolsModel.SprintEvaluation">
+              <MappingFragment StoreEntitySet="SprintEvaluation">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="SprintId" ColumnName="SprintId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserStories">
+            <EntityTypeMapping TypeName="SafeerRetrospectiveToolsModel.UserStory">
+              <MappingFragment StoreEntitySet="UserStory">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="SprintId" ColumnName="SprintId" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="IsClosed" ColumnName="IsClosed" />
+                <ScalarProperty Name="CreatedByMemberId" ColumnName="CreatedByMemberId" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="JiraUrl" ColumnName="JiraUrl" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserStoryAssignmentMembers">
+            <EntityTypeMapping TypeName="SafeerRetrospectiveToolsModel.UserStoryAssignmentMember">
+              <MappingFragment StoreEntitySet="UserStoryAssignmentMembers">
+                <ScalarProperty Name="UserStoryId" ColumnName="UserStoryId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="SafeerRetrospectiveToolsModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="SafeerRetrospectiveToolsModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="SafeerRetrospectiveToolsModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="SafeerRetrospectiveToolsModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SafeerRetrospectiveToolsModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="SafeerRetrospectiveToolsModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SafeerRetrospectiveToolsModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="SafeerRetrospectiveToolsModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="SafeerRetrospectiveToolsModel.Store.sp_upgraddiagrams" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f3d8763abd554060afb35f9b7352a924" Name="Diagram1">
+        <EntityTypeShape EntityType="SafeerRetrospectiveToolsModel.ActionPlan" Width="1.5" PointX="7.5" PointY="8" />
+        <EntityTypeShape EntityType="SafeerRetrospectiveToolsModel.ActionPlanDecision" Width="1.5" PointX="9.75" PointY="8.125" />
+        <EntityTypeShape EntityType="SafeerRetrospectiveToolsModel.AgileMember" Width="1.5" PointX="6" PointY="0.75" />
+        <EntityTypeShape EntityType="SafeerRetrospectiveToolsModel.SafeerTeam" Width="1.5" PointX="0.75" PointY="5.125" />
+        <EntityTypeShape EntityType="SafeerRetrospectiveToolsModel.Sprint" Width="1.5" PointX="3" PointY="4.25" />
+        <EntityTypeShape EntityType="SafeerRetrospectiveToolsModel.SprintCategory" Width="1.5" PointX="3" PointY="1.125" />
+        <EntityTypeShape EntityType="SafeerRetrospectiveToolsModel.SprintComment" Width="1.5" PointX="5.25" PointY="4.75" />
+        <EntityTypeShape EntityType="SafeerRetrospectiveToolsModel.SprintEvaluation" Width="1.5" PointX="8.25" PointY="4.875" />
+        <EntityTypeShape EntityType="SafeerRetrospectiveToolsModel.UserStory" Width="1.5" PointX="5.25" PointY="10.625" />
+        <EntityTypeShape EntityType="SafeerRetrospectiveToolsModel.UserStoryAssignmentMember" Width="1.5" PointX="7.5" PointY="11.25" />
+        <AssociationConnector Association="SafeerRetrospectiveToolsModel.FK_ActionPlan_SprintComments" />
+        <AssociationConnector Association="SafeerRetrospectiveToolsModel.FK_ActionPlanDetails_ActionPlan" />
+        <AssociationConnector Association="SafeerRetrospectiveToolsModel.FK_SprintEvaluation_AgileMember" />
+        <AssociationConnector Association="SafeerRetrospectiveToolsModel.FK_Sprint_SafeerTeam" />
+        <AssociationConnector Association="SafeerRetrospectiveToolsModel.FK_SprintComments_Sprint" />
+        <AssociationConnector Association="SafeerRetrospectiveToolsModel.FK_SprintEvaluation_Sprint" />
+        <AssociationConnector Association="SafeerRetrospectiveToolsModel.FK_UserStory_Sprint" />
+        <AssociationConnector Association="SafeerRetrospectiveToolsModel.FK_SprintComments_SprintCategory" />
+        <AssociationConnector Association="SafeerRetrospectiveToolsModel.FK_UserStoryAssignmentMembers_UserStory" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

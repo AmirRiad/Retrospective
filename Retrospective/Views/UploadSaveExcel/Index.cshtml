@@ -1,0 +1,48 @@
+﻿@using Retrospective.Models;
+
+@{
+    ViewBag.Title = "Index";
+}
+@using (Html.BeginForm("Import", "UploadSaveExcel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <table>
+        <tr>
+            <td>Select File : </td>
+            <td>
+                <input type="file" name="UploadedFile" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Import Data :
+            </td>
+            <td>
+                <input type="submit" name="Import" value="Import from Excel" />
+            </td>
+        </tr>
+    </table>
+}
+@*<br />
+@using (Html.BeginForm("Export", "Home"))
+{
+    <table>
+        <tr>
+            <td>Export Data : </td>
+            <td>
+                <input type="submit" name="Export" value="Export to Excel" />
+            </td>
+        </tr>
+    </table>
+}
+<br />*@
+@*@{var list = ViewBag.EmployeeList; }
+    <table id="tbl">
+        @foreach (var l in list)
+        {
+            <tr>
+                <td>@l.id</td>
+                <td>@l.Expectation</td>
+            </tr>
+        }
+    </table>*@
+
