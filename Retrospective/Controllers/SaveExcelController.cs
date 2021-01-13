@@ -36,93 +36,118 @@ namespace Safeer2.UI.Controllers
                     var sData = excelData.getData(Request["sheetName"]);
                     
                     dt = sData.CopyToDataTable();
+
                     var sprint = new Sprint();
                     var sprintComments = new List<SprintComment>();
                     var count = 0;
                     var lastCountForComment = dt.Rows.Count;
+
                     foreach (DataRow item in dt.Rows)
                     {
                         //sprint
                         if (count == 0)
                         {
-                            sprint.Name = item.Table.Columns[0].ToString();
-                            sprint.SafeerTeamId = (int)SafeerTeam.SapceX;
-                            sprint.StartDate = DateTime.Now;
-                            sprint.EndDate = DateTime.Now;
+                            AddSprint(sprint, item);
                         }
 
                         if (item.ItemArray[0].ToString() == "Sprint Score")
                             lastCountForComment = count;
 
-                        //sprint comments
+                        //sprint comments & Action Plans & Decisions
                         else if (count > 0 && count < lastCountForComment)
                         {
                             var memberId = GetMemeberId(item.ItemArray[10].ToString());
                             var planName = item.ItemArray[11].ToString();
-
-                            for (int i = 0; i < 6; i++)
+                            for (int columnIndex = 0; columnIndex < 6; columnIndex++)
                             {
-                                var commentName = item.ItemArray[i].ToString();
-                                
+                                var commentName = item.ItemArray[columnIndex].ToString();
                                 if (!string.IsNullOrEmpty(commentName))
                                 {
-                                    var sprintComment = new SprintComment();
-                                    sprintComment.MemberId = (int)AgileMember.AllSpaceXTeam;
-                                    sprintComment.Name = commentName;
-                                    sprintComment.SprintId = sprint.Id;
-                                    if (i == 0 || i == 1)
-                                        sprintComment.SprintCategoryId = (int)SprintCategory.WhatDidWeDoWell;
-                                    else if (i == 2 || i == 3)
-                                        sprintComment.SprintCategoryId = (int)SprintCategory.WhatDidWeDoWrong;
-                                    else if (i == 4 || i == 5)
-                                        sprintComment.SprintCategoryId = (int)SprintCategory.WhatCouldBeImproved;
-
-                                    //Add Action Plan
-                                    
-                                    if (!string.IsNullOrEmpty(planName))
-                                    {
-                                        var actionPlan = new ActionPlan
-                                        {
-                                            FollwingUpByMemberId = memberId,
-                                            SprintCommentId = sprint.Id
-                                        };
-                                        var actionPlanDecisions = new List<ActionPlanDecision>();
-                                        //ActionPlanDecisions
-                                        for (int k = 12; k < 18; k++)
-                                        {
-                                            var decision = item.ItemArray[k].ToString();
-                                            if (!string.IsNullOrEmpty(decision))
-                                            {
-                                                var actionPlanDecision = new ActionPlanDecision
-                                                {
-                                                    ActionPlanId = actionPlan.Id,
-                                                    Decision = decision
-                                                };
-                                                actionPlanDecisions.Add(actionPlanDecision);
-                                            }
-                                        }
-
-                                        sprintComment.ActionPlans.Add(actionPlan);
-                                    }
-
-
+                                    SprintComment sprintComment = AddSprintComment(sprint.Id, columnIndex, commentName);
+                                    if (planName.Contains(commentName))
+                                        AddActionPlansAndDecisions(sprint, item, memberId, planName, sprintComment);
                                     sprintComments.Add(sprintComment);
                                 }
                             }
 
+                            //Add Plan As comment in case not found in comments
+                            var iscommnetFoundByPlan = sprintComments.Any(o => planName.Contains(o.Name)); 
+                            if (!iscommnetFoundByPlan)
+                            {
+                                SprintComment sprintComment = AddSprintComment(sprint.Id, 5, planName);
+                                AddActionPlansAndDecisions(sprint, item, memberId, planName, sprintComment);
+                                sprintComments.Add(sprintComment);
+                            }
 
-                           
                         }
                         
                         count++;
 
                     }
                     sprint.SprintComments = sprintComments;
-                  
                     SaveFromExceltoDbAsync(sprint);
                 }
             }
             return View("Index");
+        }
+
+        private static void AddSprint(Sprint sprint, DataRow item)
+        {
+            sprint.Name = item.Table.Columns[0].ToString();
+            sprint.SafeerTeamId = (int)SafeerTeam.SapceX;
+            sprint.StartDate = DateTime.Now;
+            sprint.EndDate = DateTime.Now;
+        }
+
+        private static void AddActionPlansAndDecisions(Sprint sprint, DataRow item, int memberId, string planName, SprintComment sprintComment)
+        {
+
+            //Add Action Plan
+
+            if (!string.IsNullOrEmpty(planName))
+            {
+                var actionPlan = new ActionPlan
+                {
+                    FollwingUpByMemberId = memberId,
+                    SprintCommentId = sprint.Id
+                };
+                var actionPlanDecisions = new List<ActionPlanDecision>();
+                //ActionPlanDecisions
+                for (int k = 12; k < 18; k++)
+                {
+                    var decision = item.ItemArray[k].ToString();
+                    if (!string.IsNullOrEmpty(decision))
+                    {
+                        var actionPlanDecision = new ActionPlanDecision
+                        {
+                            ActionPlanId = actionPlan.Id,
+                            Decision = decision
+                        };
+                        actionPlanDecisions.Add(actionPlanDecision);
+                    }
+                }
+
+                actionPlan.ActionPlanDecisions = actionPlanDecisions;
+                sprintComment.ActionPlans.Add(actionPlan);
+            }
+            
+        }
+
+        private static SprintComment AddSprintComment(int sprintId, int i, string commentName)
+        {
+            var sprintComment = new SprintComment
+            {
+                MemberId = (int)AgileMember.AllSpaceXTeam,
+                Name = commentName,
+                SprintId = sprintId
+            };
+            if (i == 0 || i == 1)
+                sprintComment.SprintCategoryId = (int)SprintCategory.WhatDidWeDoWell;
+            else if (i == 2 || i == 3)
+                sprintComment.SprintCategoryId = (int)SprintCategory.WhatDidWeDoWrong;
+            else if (i == 4 || i == 5)
+                sprintComment.SprintCategoryId = (int)SprintCategory.WhatCouldBeImproved;
+            return sprintComment;
         }
 
         private int GetMemeberId(string memberName)
